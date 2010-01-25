@@ -1,0 +1,1 @@
+require "posnet_printer/printer"

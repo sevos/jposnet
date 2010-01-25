@@ -1,5 +1,4 @@
-require 'java'
-require 'rxtx/rxtxcomm'
+require "posnet_printer"
 
 gnu = Java::Gnu
 
@@ -42,7 +41,7 @@ unless port_id.currently_owned?
     command = "1#l"
     
     command = "\eP#{command}#{checksum(command)}\e\\"
-    #command = "\eP#{command}\e\\"
+        #command = "\eP#{command}\e\\"
     
     out_stream.write command.to_java_string.bytes
     
