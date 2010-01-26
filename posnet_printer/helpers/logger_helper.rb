@@ -3,6 +3,10 @@ module LoggerHelper
     @object_log
   end
 
+  def clear_log
+    @object_log = []
+  end
+
   private
     def log_message(message)
       (@object_log ||= []).push LogEntry.new(message)
