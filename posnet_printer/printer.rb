@@ -2,6 +2,7 @@ Dir["posnet_printer/helpers/**/*"].each do |file|
   require file
 end
 require "rxtx/rxtxcomm"
+require "posnet_printer/printer/connection"
 
 import gnu.io.CommPort
 import gnu.io.CommPortIdentifier
