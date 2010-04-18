@@ -18,7 +18,8 @@ module Posnet
       if serial_port_names.include? port_name
         port = CommPortIdentifier.getPortIdentifier(port_name)
         unless port.currently_owned?
-          
+          @connection = Connection.new port_name
+          @initialized = true
           log_message "Port initialized"
         else
           log_message "Port #{port_name} is busy"
@@ -30,7 +31,12 @@ module Posnet
 
     def initialized?; @initialized; end
 
+    def execute(command)
+      @connection.send command.to_s
+    end
 
-
+    def close
+      @connection.close if initialized?
+    end
   end
 end

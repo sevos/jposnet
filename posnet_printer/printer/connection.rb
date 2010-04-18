@@ -22,20 +22,15 @@ module Posnet
       end
     
       def send(string)
-        open do |stream|
-          stream[:out].write string.to_java_string.bytes
-        end
+        @streams[:out].write string.to_java_string.bytes
       end
     
-    
-      def open(&block)
-        if block_given?
-          result = yield @streams
-          return result
-        else
-          return @port
-        end
+      def send_and_read(string)
+        send string
+        sleep PROCESSING_NAP
       end
+
+      attr_reader :streams
 
       def close
         @streams.values.each(&:close)
