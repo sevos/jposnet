@@ -1,30 +1,39 @@
-class Posnet::Command  
-  
-  def self.calculate_checksum
-    @calculate_checksum = true
+class Posnet::Command
+  def self.escp(options={})
+    define_method :to_s do
+      if options[:checksum]
+        "\eP#{generate}#{checksum}\e\\"
+      else
+        "\eP#{generate}\e\\"
+      end
+    end
   end
 
-  def self.not_wrap_in_escp
-    @not_wrap_in_escp = true
-  end
-  
   def initialize(*args)
     @args = args
   end
 
   def checksum
     byte = 255
-    self.process_command(@args).bytes.each { |b| byte = byte ^ b }
+    generate.bytes.each { |b| byte = byte ^ b }
     byte.to_s(16).upcase
   end
-#TODO
+
   def to_s
-    unless @@not_wrap_in_escp
-      if @@calculate_checksum
-        
-      end
-    else
-      self.process_command @args
-    end
+    generate
   end
+
+  def expects_response?
+    self.respond_to? :process_response
+  end
+
+  private
+  
+  def generate
+    self.process_command *@args
+  end
+end
+
+Dir["posnet_printer/command/**/*"].each do |file|
+  require file
 end

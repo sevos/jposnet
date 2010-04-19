@@ -33,10 +33,37 @@ module Posnet
 
     def execute(command)
       @connection.send command.to_s
+      if command.expects_response?
+        wait_for_response
+        return command.process_response(@connection.read)
+      end
     end
 
     def close
       @connection.close if initialized?
+    end
+    
+    def status
+      returning execute(Posnet::Command::DLE.new) do |dle|
+        if dle[:online]
+          dle.merge!(execute(Posnet::Command::ENQ.new))
+        end
+      end
+    end
+
+    private
+    
+    def wait_for_response(counter=3)
+      if @connection.response_available?
+        return true
+      else
+        if counter > 0
+          sleep 0.1
+          return wait_for_response(counter-1)
+        else
+          return false
+        end
+      end
     end
   end
 end

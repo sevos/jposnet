@@ -11,6 +11,10 @@ module LoggerHelper
     def log_message(message)
       (@object_log ||= []).push LogEntry.new(message)
     end
+
+    def log_data(message, data)
+      log_message "#{message}: #{data.bytes.map {|b| b.to_s(16) }.join(' ')}"
+    end
 end
 
 class LogEntry
