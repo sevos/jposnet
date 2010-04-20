@@ -31,7 +31,12 @@ module Posnet
 
     def initialized?; @initialized; end
 
-    def execute(command)
+    def execute(command, *args)
+      if command.is_a? Symbol
+        command_class = eval("Posnet::Command::#{command.to_s.upcase}")
+        command = command_class.new *args
+      end
+
       @connection.send command.to_s
       if command.expects_response?
         wait_for_response
@@ -49,6 +54,17 @@ module Posnet
           dle.merge!(execute(Posnet::Command::ENQ.new))
         end
       end
+    end
+    
+    def last_error_id
+      unless ready?
+        p.execute :lbernrq
+      end
+    end
+
+    def ready?
+      status = self.status
+      status[:online] && status[:feed_ok] && !status[:error] && status[:last_command_success]
     end
 
     private
