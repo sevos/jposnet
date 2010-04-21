@@ -21,6 +21,12 @@ module Posnet
           @connection = Connection.new port_name
           @initialized = true
           log_message "Port initialized"
+          execute :dle
+          sleep 0.5
+          if ready?
+            execute :lbserm, :normal
+            log_message "Normal error handling activated"
+          end
         else
           log_message "Port #{port_name} is busy"
         end
@@ -56,15 +62,19 @@ module Posnet
       end
     end
     
-    def last_error_id
+    def error
       unless ready?
-        p.execute :lbernrq
+        execute :lbernrq
       end
     end
 
     def ready?
       status = self.status
       status[:online] && status[:feed_ok] && !status[:error] && status[:last_command_success]
+    end
+
+    def method_missing(name, *args)
+      execute name.to_sym, *args
     end
 
     private
