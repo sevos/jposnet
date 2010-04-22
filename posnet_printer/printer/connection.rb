@@ -27,7 +27,7 @@ module Posnet
     
       def send(string)
       log_data "Sending data", string
-        @streams[:out].write string.to_java_string.bytes
+      string.bytes.each { |x| @streams[:out].write x }
       end
     
       def read
