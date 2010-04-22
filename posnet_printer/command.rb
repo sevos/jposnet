@@ -18,7 +18,9 @@ class Posnet::Command
   def checksum
     byte = 255
     generate.bytes.each { |b| byte = byte ^ b }
-    byte.to_s(16).upcase
+    returning byte.to_s(16).upcase do |str|
+      str.insert(0, "0") if byte < 16
+    end
   end
 
   def to_s
