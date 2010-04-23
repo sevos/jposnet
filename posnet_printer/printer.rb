@@ -23,15 +23,13 @@ module Posnet
           log_message "Port initialized"
           execute :dle
           sleep 0.5
-          if ready?
+          if online?
             execute :lbserm, :normal
             log_message "Normal error handling activated"
           end
-        else
-          log_message "Port #{port_name} is busy"
+        else log_message "Port #{port_name} is busy"
         end
-      else
-        log_message "Incorrect port name"
+      else log_message "Incorrect port name"
       end
     end
 
@@ -45,8 +43,9 @@ module Posnet
 
       @connection.send command.to_s
       if command.expects_response?
-        wait_for_response
-        return command.process_response(@connection.read)
+        if @connection.wait_for_response
+          return command.process_response(@connection.read)
+        end
       end
     end
 
@@ -73,23 +72,13 @@ module Posnet
       status[:online] && status[:feed_ok] && !status[:error] && status[:last_command_success]
     end
 
+    def online?
+      self.status[:online]
+    end
+
     def method_missing(name, *args)
       execute name.to_sym, *args
     end
 
-    private
-    
-    def wait_for_response(counter=3)
-      if @connection.response_available?
-        return true
-      else
-        if counter > 0
-          sleep 0.1
-          return wait_for_response(counter-1)
-        else
-          return false
-        end
-      end
-    end
   end
 end

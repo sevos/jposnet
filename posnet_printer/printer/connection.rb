@@ -52,6 +52,19 @@ module Posnet
       def response_available?
         @streams[:in].available > 0
       end
+
+      def wait_for_response(counter=3)
+        if response_available?
+          return true
+        else
+          if counter > 0
+            sleep 0.1
+            return wait_for_response(counter-1)
+          else
+            return false
+          end
+        end
+      end
     end
   end
 end
