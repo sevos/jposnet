@@ -76,9 +76,25 @@ module Posnet
       self.status[:online]
     end
 
+    # temporary solution for faster commands calling
     def method_missing(name, *args)
       execute name.to_sym, *args
     end
 
+    def cash_status; execute :lbcshsts; end
+
+    def payment(amount)
+      execute :lbinccsh, amount
+    end
+
+    def payout(amount)
+      execute :lbdeccsh, amount
+    end
+
+    def set_header(header)
+      header.gsub!("\n\r", "\r")
+      header.gsub!("\n", "\r")
+      execute :lbsethdr, header
+    end
   end
 end
