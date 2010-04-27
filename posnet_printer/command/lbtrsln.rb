@@ -6,7 +6,7 @@ class Posnet::Command::LBTRSLN < Posnet::Command
     @quantity = quantity
     @price = price
     @gross_price = gross_price
-    "#{line_number}$l#{name[0,40]}\r#{formatted_quantity}\r /#{formatted_price}/#{formatted_gross_price}/"
+    "#{line_number}$l#{name[0,40].to_mazovia}\r#{formatted_quantity}\r /#{formatted_price}/#{formatted_gross_price}/"
   end
 
   def formatted_quantity
