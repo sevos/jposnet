@@ -55,8 +55,11 @@ module Posnet
     
     def status
       returning execute(Posnet::Command::DLE.new) do |dle|
-        if dle[:online]
-          dle.merge!(execute(Posnet::Command::ENQ.new))
+        if dle 
+          if dle[:online]
+            dle.merge!(execute(Posnet::Command::ENQ.new))
+          end
+        else dle = {:online => false}
         end
       end
     end
