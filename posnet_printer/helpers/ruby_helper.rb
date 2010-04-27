@@ -11,6 +11,10 @@ class Fixnum
   def off?(position)
     not on?(position)
   end
+
+  def to_s_price
+    "%.2f" % self
+  end
 end
 
 class String
