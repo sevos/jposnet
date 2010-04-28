@@ -44,7 +44,8 @@ module Posnet
       @connection.send command.to_s
       if command.expects_response?
         if @connection.wait_for_response
-          return command.process_response(@connection.read)
+          wait_for_escape = true if command.respond_to?(:on_response_wait_for_trailing_escape) && command.on_response_wait_for_trailing_escape
+          return command.process_response(@connection.read(wait_for_escape))
         end
       end
     end
@@ -76,7 +77,7 @@ module Posnet
     end
 
     def online?
-      self.status[:online]
+      self.status && self.status[:online]
     end
 
     # temporary solution for faster commands calling

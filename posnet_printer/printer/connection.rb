@@ -30,10 +30,19 @@ module Posnet
       string.bytes.each { |x| @streams[:out].write x }
       end
     
-      def read
+      def read(expect_trailing_escape = false)
         if response_available?
           returning "" do |response|
             response << @streams[:in].read while response_available?
+            if expect_trailing_escape
+              i = 0
+              until (response =~ /^.*\e\\$/ or i > 2) do
+                i+=1
+                if wait_for_response
+                  response << read
+                end
+              end
+            end
             log_data "Response received", response
           end
         else 

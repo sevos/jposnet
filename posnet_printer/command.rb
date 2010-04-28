@@ -11,6 +11,10 @@ class Posnet::Command
     end
   end
 
+  def self.on_response_wait_for_trailing_escape
+    define_method(:on_response_wait_for_trailing_escape) { true }
+  end
+
   def initialize(*args)
     @args = args
   end
@@ -35,6 +39,10 @@ class Posnet::Command
   
   def generate
     self.process_command *@args
+  end
+
+  def on_response_wait_for_trailing_escape
+    false
   end
 end
 
