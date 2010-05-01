@@ -9,12 +9,24 @@ class Posnet::Command::LBFSTRQ < Posnet::Command
   def process_response(response)
     if response =~ /\eP1#X(.*)\e\\/
       res = $1.split "/"
-      params = res.shift
+      params = parse_params(res.shift)
       status = parse_numbers(res)
-
+      status.merge! params
       return status
     else "error: #{response}"
     end
+  end
+
+  def parse_params(params)
+    array = params.split(";")
+    flag = lambda { |i| (array[i].to_i == 1 ? true : false) }
+    {
+      :error => array[0].to_i,
+      :fiscal => flag.call(1),
+      :transaction_now => flag.call(2),
+      :trf_flag => flag.call(3),
+      :ram_reset_count => array[5].to_i
+    }
   end
 
   def parse_numbers(numbers)
@@ -43,7 +55,7 @@ class Posnet::Command::LBFSTRQ < Posnet::Command
       :unique_id => unique_id,
       :cash_status => cash_status,
       :par_num => par_num,
-      :ptu => ptu
+      :ptu => ptu,
     }
   end
 end
