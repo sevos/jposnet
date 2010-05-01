@@ -40,9 +40,9 @@ module Posnet
         command_class = eval("Posnet::Command::#{command.to_s.upcase}")
         command = command_class.new *args
       end
-
+      sleep 0.25
       @connection.send command.to_s
-      if command.expects_response?
+      if command.respond_to?(:process_response)
         if @connection.wait_for_response
           wait_for_escape = true if command.respond_to?(:on_response_wait_for_trailing_escape) && command.on_response_wait_for_trailing_escape
           return command.process_response(@connection.read(wait_for_escape))
@@ -67,7 +67,9 @@ module Posnet
     
     def error
       unless ready?
-        execute :lbernrq
+        unless execute(:enq)[:last_command_success]
+          return execute(:lbfstrq)[:error]
+        end
       end
     end
 
