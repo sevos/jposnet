@@ -102,5 +102,10 @@ module Posnet
       header.gsub!("\n", "\r")
       execute :lbsethdr, header
     end
+
+    def ptu
+      response = execute(:lbfstrq)
+      response[:ptu] if response
+    end
   end
 end
