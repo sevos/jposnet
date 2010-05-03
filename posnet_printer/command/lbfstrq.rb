@@ -33,9 +33,8 @@ class Posnet::Command::LBFSTRQ < Posnet::Command
     unique_id = numbers.pop
     cash_status = numbers.pop.to_f
     tot_g = numbers.pop.to_f
-
     ptu_count = numbers.count / 2
-    ptus = numbers.shift ptu_count
+    ptus = numbers.slice!(0..(ptu_count-1))
     par_num = numbers.shift
     tots = numbers
     
@@ -55,7 +54,7 @@ class Posnet::Command::LBFSTRQ < Posnet::Command
       :unique_id => unique_id,
       :cash_status => cash_status,
       :par_num => par_num,
-      :ptu => ptu,
+      :ptu => ptu
     }
   end
 end
