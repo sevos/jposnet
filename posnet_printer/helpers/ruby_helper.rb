@@ -17,6 +17,12 @@ class Fixnum
   end
 end
 
+class Float
+  def to_s_price
+    "%.2f" % self
+  end
+end
+
 class String
   def to_mazovia
     returning self.dup do |text|
