@@ -1,0 +1,10 @@
+%h1 Configuration
+
+%p You need to select serial port.
+
+%form{:action => "/config", :method => "POST"}
+  %label{:for => "port_name"} Port name
+  %select{:name => "port_name"}
+    - @port_names.each do |port_name|
+      %option= port_name
+  %input{:type => "Submit", :value => "Save"}

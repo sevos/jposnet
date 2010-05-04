@@ -1,0 +1,26 @@
+%h1 Control panel
+
+%p Welcome in control panel. Printer status:
+
+%dl
+  %dt Port filename
+  %dd= @port_file_path
+  %dt Printer status
+  %dd= (@printer.initialized? ? "initialized" : "not initialized")
+/
+
+%form{:action => "/cash_in", :method => "post"}
+  %label{:for => "amount"} Cash in
+  %input{:type => "text", :name => "amount"}
+  %input{:type => "Submit", :value => "In"}
+
+%form{:action => "/cash_out", :method => "post"}
+  %label{:for => "amount"} Cash out
+  %input{:type => "text", :name => "amount"}
+  %input{:type => "Submit", :value => "Out"}
+
+%form{:action => "/cash_status", :method => "post"}
+  %input{:type => "Submit", :value => "Print cash report"}
+
+%form{:action => "/disconnect", :method => "post"}
+  %input{:type => "Submit", :value => "Disconnect printer"}
