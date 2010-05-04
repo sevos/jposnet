@@ -46,6 +46,6 @@ class Posnet::Command
   end
 end
 
-Dir["posnet_printer/command/**/*"].each do |file|
+Dir["posnet/command/**/*"].each do |file|
   require file
 end
