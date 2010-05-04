@@ -10,12 +10,12 @@ import gnu.io.SerialPort
 
 module Posnet
   class Printer
-    include SerialPortHelper
+    extend SerialPortHelper
     logger
     DRV_NAME = "Posnet Printer Ruby Driver"
 
     def initialize(port_name)
-      if serial_port_names.include? port_name
+      if Posnet::Printer.serial_port_names.include? port_name
         port = CommPortIdentifier.getPortIdentifier(port_name)
         unless port.currently_owned?
           @connection = Connection.new port_name
@@ -40,7 +40,7 @@ module Posnet
         command_class = eval("Posnet::Command::#{command.to_s.upcase}")
         command = command_class.new *args
       end
-      sleep 0.25
+
       @connection.send command.to_s
       if command.respond_to?(:process_response)
         if @connection.wait_for_response
@@ -51,7 +51,10 @@ module Posnet
     end
 
     def close
-      @connection.close if initialized?
+      if initialized?
+        @connection.close
+        @initialized = false
+      end
     end
     
     def status
