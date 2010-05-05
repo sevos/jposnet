@@ -1,0 +1,5 @@
+%form{:action => "/set_header", :method => "post"}
+  %label{:for => "header"} New header
+  %textarea.fixed{:name => "header", :rows => 10, :cols => 50}
+  %input{:type => "Submit", :value => "Set header"}
+  %a{:href => "/"} Cancel

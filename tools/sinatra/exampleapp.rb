@@ -40,6 +40,10 @@ end
 
 get "/" do
   @printer = $printer
+  @printer_status = $printer.status
+  if @printer_status && @printer_status[:online]
+    @lbfstrq = $printer.execute(:lbfstrq)
+  end
   haml :index
 end
 
@@ -70,6 +74,16 @@ end
 post "/cash_out" do
   require_printer
   $printer.execute :lbdeccsh, request.params["amount"].to_f
+  redirect "/"
+end
+
+get "/set_header" do
+  haml :set_header
+end
+
+post "/set_header" do
+  require_printer
+  $printer.set_header request.params["header"].to_s[0,500]
   redirect "/"
 end
 
