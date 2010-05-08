@@ -12,30 +12,22 @@ def hashinize_params
       break if split_keys.length == index + 1
       this_param[split_keys[index]] ||= {}
       this_param = this_param[split_keys[index]]
-   end
-   this_param[split_keys.last] = value
+    end
+    this_param[split_keys.last] = value
   end
   request.params.replace new_params
 end
 
-def require_config
-  @port_file_path = request.cookies["port_file_path"]
-  unless @port_file_path or request.path_info == "/config"
-    redirect "/config" and halt
-  else
-    $printer ||= Posnet::Printer.new(@port_file_path)
-  end
-end
-
 def require_printer
-  unless $printer && $printer.initialized?
+  $printer ||= Posnet::Printer.new(@port_file_path) if @port_file_path
+  unless $printer and $printer.initialized? or request.path_info == "/config"
     redirect "/config" and halt
   end
 end
 
 before do
   hashinize_params
-  require_config
+  require_printer
 end
 
 get "/" do
@@ -60,19 +52,16 @@ post '/config' do
 end
 
 post "/cash_status" do
-  require_printer
   $printer.cash_status
   redirect "/"
 end
 
 post "/cash_in" do
-  require_printer
   $printer.execute :lbinccsh, request.params["amount"].to_f
   redirect "/"
 end
 
 post "/cash_out" do
-  require_printer
   $printer.execute :lbdeccsh, request.params["amount"].to_f
   redirect "/"
 end
@@ -82,7 +71,6 @@ get "/set_header" do
 end
 
 post "/set_header" do
-  require_printer
   $printer.set_header request.params["header"].to_s[0,500]
   redirect "/"
 end
