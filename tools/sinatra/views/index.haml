@@ -1,17 +1,26 @@
 %h1 Control panel
 
 %p Welcome in control panel. Printer status:
-
-%dl
-  %dt Port filename
-  %dd= @port_file_path
-  %dt Printer status
-  %dd= (@printer.initialized? ? "initialized" : "not initialized")
-  %dt Detailed status
-  %dd= @printer_status.inspect
-  - if @lbfstrq
-    %dt LBFSTRQ status command
-    %dd= @lbfstrq.inspect
+.status
+  %dl
+    %dt Port filename
+    %dd= @port_file_path
+    %dt Printer status
+    %dd= (@printer.initialized? ? "initialized" : "not initialized")
+.status
+  %h2 Printer status
+  %dl
+    - @printer_status.each_pair do |key, value|
+      %dt= key
+      %dd= value
+  
+- if @lbfstrq
+  .status
+    %h2 LBFSTRQ status command
+    %dl
+      - @lbfstrq.each_pair do |key, value|
+        %dt= key
+        %dd= value.inspect
 
 %form.action{:action => "/cash_in", :method => "post"}
   %label{:for => "amount"} Cash in
