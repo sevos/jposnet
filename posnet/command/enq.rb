@@ -4,7 +4,7 @@ class Posnet::Command::ENQ < Posnet::Command
   end
 
   def process_response(response)
-     return {} if response.nil?
+     return Hash.new if response.nil?
      byte = response.bytes.first
      return {
        :trainee_mode => (byte.off?(3)), #FSK
