@@ -75,6 +75,31 @@ post "/set_header" do
   redirect "/"
 end
 
+get "/recipe" do
+  @ptus = $printer.ptu.to_a.map{|code,hash| [code.to_s.upcase, "%.2f \%" % hash[:value]]}.delete_if {|code, val| code == "G"}.push([" ", "Zwolniony"])
+  if request.params["lines"]
+    @lines = request.params["lines"].to_i
+  else 
+    @lines = 3
+  end
+  haml :recipe
+end
+
+post "/recipe" do
+  $printer.execute :lbtrshdr
+  sleep 0.25
+  sum = 0
+  response = ""
+  request.params["recipe"]["lines"].each_pair do |number, data|
+    $printer.execute :lbtrsln, number.to_i + 1, data["name"], data["quantity"].to_f, data["price"].to_f, data["ptu"]
+    sum += data["quantity"].to_f * data["price"].to_f
+    response += "#{data.inspect}\n"
+    sleep 0.25
+  end
+  $printer.execute :lbtrexit, sum
+  redirect "/"
+end
+
 post "/disconnect" do
   $printer.close if $printer.initialized?
   $printer = nil

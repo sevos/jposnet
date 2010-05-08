@@ -1,0 +1,15 @@
+%form{:action => "/recipe", :method => "POST"}
+  - @lines.times do |i|
+    .line
+      %label{:for => "recipe[lines[#{i}][name]]"} Product name
+      %input{:type => "text", :name => "recipe[lines[#{i}][name]]"}
+      %label{:for => "recipe[lines[#{i}][quantity]]"} Quantity
+      %input{:type => "text", :name => "recipe[lines[#{i}][quantity]]"}
+      %label{:for => "recipe[lines[#{i}][price]]"} Price
+      %input{:type => "text", :name => "recipe[lines[#{i}][price]]"}
+      %label{:for => "recipe[lines[#{i}][ptu]]"} Vat
+      %select{:name => "recipe[lines[#{i}][ptu]]"}
+        - @ptus.each do |code, value|
+          %option{:value => code}== #{code} - #{value}
+
+  %input{:type => "Submit", :value => "Print"}

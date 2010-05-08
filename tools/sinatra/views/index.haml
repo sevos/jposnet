@@ -23,6 +23,11 @@
   %input{:type => "text", :name => "amount"}
   %input{:type => "Submit", :value => "Out"}
 
+%form.action{:action => "/recipe", :method => "get"}
+  %label{:for => "lines"} Number of lines
+  %input{:type => "text", :name => "lines"}
+  %input{:type => "Submit", :value => "Recipe"}
+
 %form.action{:action => "/set_header", :method => "get"}
   %input{:type => "Submit", :value => "Set header"}
 
