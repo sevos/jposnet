@@ -11,7 +11,6 @@ import gnu.io.SerialPort
 module Posnet
   class Printer
     extend SerialPortHelper
-    logger
     DRV_NAME = "Posnet Printer Ruby Driver"
 
     def initialize(port_name)
@@ -20,16 +19,12 @@ module Posnet
         unless port.currently_owned?
           @connection = Connection.new port_name
           @initialized = true
-          log_message "Port initialized"
           execute :dle
           sleep 0.5
           if online?
             execute :lbserm, :normal
-            log_message "Normal error handling activated"
           end
-        else log_message "Port #{port_name} is busy"
         end
-      else log_message "Incorrect port name"
       end
     end
 

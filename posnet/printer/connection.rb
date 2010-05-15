@@ -10,8 +10,7 @@ module Posnet
       include SerialPortHelper
       DRV_NAME = "Posnet Printer Ruby Driver"
       PROCESSING_NAP = 0.1
-      
-      logger
+
       attr_reader :streams
       
       def initialize(port_name)
@@ -19,15 +18,13 @@ module Posnet
           @port_id = CommPortIdentifier.getPortIdentifier(port_name)
           @port = @port_id.open DRV_NAME, (PROCESSING_NAP * 1000).to_i
           @streams = {:out => @port.getOutputStream(), :in => @port.getInputStream()}
-          log_message "Connection initialized"
         else
           raise "Incorrect port name. Allowed port names are: #{serial_port_names.join(', ')}"
         end
       end
     
       def send(string)
-      log_data "Sending data", string
-      string.bytes.each { |x| @streams[:out].write x }
+        string.bytes.each { |x| @streams[:out].write x }
       end
     
       def read(expect_trailing_escape = false)
@@ -43,11 +40,7 @@ module Posnet
                 end
               end
             end
-            log_data "Response received", response
           end
-        else 
-          log_message "No response received"
-          return nil
         end
       end
 
@@ -55,7 +48,6 @@ module Posnet
         @streams.values.each(&:close)
         @streams = nil
         @port.close if @port.is_a? SerialPort
-        log_message "Connection closed"
       end
 
       def response_available?
