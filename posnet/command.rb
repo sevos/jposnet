@@ -2,8 +2,6 @@ class Posnet::Command
   def self.escp(options={})
     define_method :to_s do
       if options[:checksum]
-        puts "Sending: #{generate}"
-        puts "Checksum: #{checksum}"
         "\eP#{generate}#{checksum}\e\\"
       else
         "\eP#{generate}\e\\"
