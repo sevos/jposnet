@@ -33,7 +33,7 @@ end
 get "/" do
   @printer = $printer
   @printer_status = $printer.status
-  @printer_responding = not @printer_status.nil?
+  @printer_responding = !@printer_status.nil?
   @printer_online = @printer_status && @printer_status[:online]
   if @printer_online
     @lbfstrq = $printer.execute(:lbfstrq)
