@@ -7,12 +7,17 @@
     %dd= @port_file_path
     %dt Printer status
     %dd= (@printer.initialized? ? "initialized" : "not initialized")
-.status
-  %h2 Printer status
-  %dl
-    - @printer_status.each_pair do |key, value|
-      %dt= key
-      %dd= value
+- if @printer_responding
+  .status
+    %h2 Printer status
+    %dl
+      - @printer_status.each_pair do |key, value|
+        %dt= key
+        %dd= value
+- else
+  .status
+    %p
+      %strong Printer not responding
   
 - if @lbfstrq
   .status
@@ -22,26 +27,27 @@
         %dt= key
         %dd= value.inspect
 
-%form.action{:action => "/cash_in", :method => "post"}
-  %label{:for => "amount"} Cash in
-  %input{:type => "text", :name => "amount"}
-  %input{:type => "Submit", :value => "In"}
-
-%form.action{:action => "/cash_out", :method => "post"}
-  %label{:for => "amount"} Cash out
-  %input{:type => "text", :name => "amount"}
-  %input{:type => "Submit", :value => "Out"}
-
-%form.action{:action => "/recipe", :method => "get"}
-  %label{:for => "lines"} Number of lines
-  %input{:type => "text", :name => "lines"}
-  %input{:type => "Submit", :value => "Recipe"}
-
-%form.action{:action => "/set_header", :method => "get"}
-  %input{:type => "Submit", :value => "Set header"}
-
-%form.action{:action => "/cash_status", :method => "post"}
-  %input{:type => "Submit", :value => "Print cash report"}
-
+- if @printer_online
+  %form.action{:action => "/cash_in", :method => "post"}
+    %label{:for => "amount"} Cash in
+    %input{:type => "text", :name => "amount"}
+    %input{:type => "Submit", :value => "In"}
+  
+  %form.action{:action => "/cash_out", :method => "post"}
+    %label{:for => "amount"} Cash out
+    %input{:type => "text", :name => "amount"}
+    %input{:type => "Submit", :value => "Out"}
+  
+  %form.action{:action => "/recipe", :method => "get"}
+    %label{:for => "lines"} Number of lines
+    %input{:type => "text", :name => "lines"}
+    %input{:type => "Submit", :value => "Recipe"}
+  
+  %form.action{:action => "/set_header", :method => "get"}
+    %input{:type => "Submit", :value => "Set header"}
+  
+  %form.action{:action => "/cash_status", :method => "post"}
+    %input{:type => "Submit", :value => "Print cash report"}
+  
 %form.action{:action => "/disconnect", :method => "post"}
   %input{:type => "Submit", :value => "Disconnect printer"}

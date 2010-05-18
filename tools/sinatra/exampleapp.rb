@@ -33,7 +33,9 @@ end
 get "/" do
   @printer = $printer
   @printer_status = $printer.status
-  if @printer_status && @printer_status[:online]
+  @printer_responding = not @printer_status.nil?
+  @printer_online = @printer_status && @printer_status[:online]
+  if @printer_online
     @lbfstrq = $printer.execute(:lbfstrq)
   end
   haml :index
